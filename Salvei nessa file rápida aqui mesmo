@@ -1,0 +1,240 @@
+Códigos: 
+Usando SQL para a tabela usuários armazenar os dados: 
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    perfil ENUM('administrador', 'convencional') NOT NULL,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+Para que a tabela “Tipos de problema” seja armazenada os dados:
+
+
+CREATE TABLE tipos_problema (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT
+);
+
+
+
+Para armazenar os tipos de denúncia:
+
+CREATE TABLE denuncias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_tipo_problema INT NOT NULL,
+    descricao TEXT NOT NULL,
+    localizacao VARCHAR(255) NOT NULL,
+    status ENUM('aberta', 'fechada') DEFAULT 'aberta',
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_solucao TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    FOREIGN KEY (id_tipo_problema) REFERENCES tipos_problema(id)
+);
+
+
+
+
+
+
+
+
+
+
+Para armazenar os comentários das denúncias:
+CREATE TABLE comentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_denuncia INT NOT NULL,
+    id_usuario INT NOT NULL,
+    comentario TEXT NOT NULL,
+    data_comentario TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_denuncia) REFERENCES denuncias(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+
+
+
+
+→ CÓDIGO JAVA 
+Classe usuário:
+
+public class Usuario {
+    private int id;
+    private String nome;
+    private String email;
+    private String senha;
+    private String perfil; 
+
+
+    // Get e set
+
+
+    public boolean login(String email, String senha) {
+        // Lógica de autenticação
+    }
+
+
+    public void cadastrar() {
+        // Cadastrar usuário no banco
+    }
+
+
+    public boolean isAdministrador() {
+        return this.perfil.equals("administrador");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+Classe tipo de problema:
+
+public class TipoProblema {
+    private int id;
+    private String nome;
+    private String descricao;
+
+
+    // Get e set
+
+
+    public void cadastrar() {
+        // Cadastrar tipo de problema
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+Classe denúncia:
+
+public class Denuncia {
+    private int id;
+    private int idUsuario;
+    private int idTipoProblema;
+    private String descricao;
+    private String localizacao;
+    private String status;
+    private Date dataCriacao;
+    private Date dataSolucao;
+
+
+    // Getters e setters
+
+
+    public void cadastrar() {
+        // Cadastrar denúncia
+    }
+
+
+    public void fechar() {
+        // Fechar denúncia
+    }
+
+
+    public List<Denuncia> visualizarDenuncias() {
+        // Exibir todas as denúncias
+    }
+}
+
+
+
+Curtida: 
+public class Curtida {
+    private int id;
+    private int idDenuncia;
+    private int idUsuario;
+    private Date dataCurtida;
+
+
+    // Get e set
+
+
+    public void adicionarCurtida() {
+        // Adicionar curtida
+    }
+
+
+    public void removerCurtida() {
+        // Remover curtida
+    }
+}
+
+
+Para o dashboard:
+
+import java.util.Map;
+
+
+public class Dashboard {
+
+
+    public Map<String, Integer> gerarRelatorioMensal() {
+       
+    }
+
+
+    public Map<String, Integer> contarDenunciasPorTipo() {
+       
+    }
+}
+
+
+
+
+
+
+
+
+
+
+Finalizar o Database:
+
+    private Connection connection;
+
+
+    public Database() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/seu_banco", "usuario", "senha");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+
+    public void fecharConexao() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
